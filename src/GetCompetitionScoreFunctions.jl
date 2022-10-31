@@ -3,7 +3,7 @@
 
     The quation for this score is defined as a time series,
 
-    $$ c(t) = \frac{1}{t}\log\left( \frac{s(t)_{2}}{s(t=0)_{2}}\frac{s(t)_{1}}{s(t=0)_{1}} \right)$$
+    ```math c(t) = \frac{1}{t}\log\left( \frac{s(t)_{2}}{s(t=0)_{2}}\frac{s(t)_{1}}{s(t=0)_{1}} \right) ``
 
     This function returns the finte competition time series.
 
@@ -21,7 +21,7 @@ end
 
 
 """
-    Once the cell data has been read into the vector of `MachineStateCellProperties`, then this function computes the time vector which adjusts the initial time value to $0$. 
+    Once the cell data has been read into the vector of `MachineStateCellProperties`, then this function computes the time vector which adjusts the initial time value to `0`. 
     
     Each cell label is extracted and the according time series of total population counts is defined. 
 
