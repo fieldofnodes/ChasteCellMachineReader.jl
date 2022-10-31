@@ -1,4 +1,4 @@
-module RandomWalker
+module ChasteCellMachineReader
 
 using Reexport
 
