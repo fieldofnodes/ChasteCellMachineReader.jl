@@ -1,10 +1,7 @@
 """
     Take two time series and a time vector to compute the competition score. This is score is normalised according to the initial population count per each population.
 
-    The quation for this score is defined as a time series,
-
-    ```math c(t) = \frac{1}{t}\log\left( \frac{s(t)_{2}}{s(t=0)_{2}}\frac{s(t)_{1}}{s(t=0)_{1}} \right) ``
-
+    
     This function returns the finte competition time series.
 
 """
