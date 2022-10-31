@@ -16,6 +16,24 @@ function get_competition_score_function(time_series₁,time_series₂,time)
 end
 
 
+"""
+    Take two time series and a time vector to compute the competition score. This is score is normalised according to the initial population count per each population.
+
+    
+    This function returns the finte competition time series.
+
+"""
+function get_competition_score_function(::MachineState,time_series₁,time_series₂,time,growth_rate₁,growth_rate₂)
+    basic_comp = Float64.(log.(
+            (time_series₁[1] .* time_series₂) ./ (time_series₂[1] .* time_series₁)) 
+
+    comp = 1 .+ ((1 ./ time) .* ((1/growth_rate₁) .* basic_comp)) .- (growth_rate₁ / growth_rate₂)
+    
+    return comp
+end
+
+
+
 
 """
     Once the cell data has been read into the vector of `MachineStateCellProperties`, then this function computes the time vector which adjusts the initial time value to `0`. 
