@@ -25,7 +25,7 @@ end
 """
 function get_competition_score_function(::MachineState,time_series₁,time_series₂,time,growth_rate₁,growth_rate₂)
     basic_comp = Float64.(log.(
-            (time_series₁[1] .* time_series₂) ./ (time_series₂[1] .* time_series₁)) 
+            (time_series₁[1] .* time_series₂) ./ (time_series₂[1] .* time_series₁)))
 
     comp = 1 .+ ((1 ./ time) .* ((1/growth_rate₁) .* basic_comp)) .- (growth_rate₁ / growth_rate₂)
     
