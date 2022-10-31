@@ -3,14 +3,14 @@
 
     The purpose of the function is to take a raw matrix, which was read into memory through the `readdlm` function from `DelimitedFiles` package. 
 
-    Each time step in the Chaste simulation saves to file $N$ elements. These elements are represented in the struct `MachineStateCellProperties` and contains fieldnames:
+    Each time step in the Chaste simulation saves to file `N` elements. These elements are represented in the struct `MachineStateCellProperties` and contains fieldnames:
     1. `time`: the time value.
     2. `location_index`: Index of cell related to its location in the simulated domain.
     3. `cell_id`: Identification label of the cell.
-    4. `cell_type_label`: Cell type, can be $0$ or $1$.
-    5. `number_machines_state_one`: Count of total machines in all cells in state $1$.
-    6. `number_machines_state_two`: Count of total machines in all cells in state $2$.
-    7. `number_machines_state_three`: Count of total machines in all cells in state $3$.
+    4. `cell_type_label`: Cell type, can be `0` or `1`.
+    5. `number_machines_state_one`: Count of total machines in all cells in state `1`.
+    6. `number_machines_state_two`: Count of total machines in all cells in state `2`.
+    7. `number_machines_state_three`: Count of total machines in all cells in state `3`.
     8. `number_neighbours_different_label`: Count of neighbouring cells that have a different label to the identified cell.
     
 
@@ -82,15 +82,15 @@ end
 
     The purpose of the function is to take a raw matrix, which was read into memory through the `readdlm` function from `DelimitedFiles` package. 
 
-    Each time step in the Chaste simulation saves to file $N$ elements. These elements are represented in the struct `MachineDataProperties` and contains fieldnames:
+    Each time step in the Chaste simulation saves to file `N` elements. These elements are represented in the struct `MachineDataProperties` and contains fieldnames:
     1. `time`: the time value.
     2. `cell_id`: Identification label of the cell.
-    3. `cell_label`: Cell type, can be $0$ or $1$.
+    3. `cell_label`: Cell type, can be `0` or `1`.
     4. `machine_id`: Identification label of the machine.
     5. `machine_state`: State of machine identified.
-    6. `machine_coord_x`: Coordinate of $x$ location.
-    7. `machine_coord_y`: Coordinate of $y$ location.
-    8. `machine_coord_z`: Coordinate of $z$ location.
+    6. `machine_coord_x`: Coordinate of `x` location.
+    7. `machine_coord_y`: Coordinate of `y` location.
+    8. `machine_coord_z`: Coordinate of `z` location.
     
 
 
