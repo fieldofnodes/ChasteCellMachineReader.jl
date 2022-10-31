@@ -1,5 +1,5 @@
 """
-    Compute a time series and shift every element such that the initial one is $0$.
+    Compute a time series and shift every element such that the initial one is `0`.
 """
 function shift_time_back_to_zero(time)
     return time .- time[1]
