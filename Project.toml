@@ -3,6 +3,9 @@ uuid = "787956cd-b606-4792-9463-7982fc6b30e9"
 authors = ["Jonathan Miller"]
 version = "0.1.0"
 
+[deps]
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
+
 [compat]
 julia = "1"
 
