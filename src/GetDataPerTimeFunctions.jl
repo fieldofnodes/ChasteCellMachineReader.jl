@@ -50,7 +50,7 @@ function get_population_counts_per_time_step(cell_data,time_to_match)
     count_machine_state_three_to_pop_01 = count_machines_state_three / count_label_1
     count_machine_total_to_pop_01 = count_machines_total / count_label_1
     # Intend to get count of all cells, but when no more cell label = 0, just get all cells that are label 1.
-    count_neighbours_diff_to_cell_1 = 
+    count_neighbours_diff_to_cell_0 = 
         length(subset_cell_label_0) != 0 ? 
         sum([c.number_neighbours_different_label for c in subset_cell_label_0]) : 
         count_label_1
