@@ -62,9 +62,8 @@ end
 """
 struct MachineStateTimeSeries
     time
-    label₀
-    label₁
-    competition
+    target
+    attacker
 end
 
 """
