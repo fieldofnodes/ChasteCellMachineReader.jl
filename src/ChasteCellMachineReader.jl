@@ -6,7 +6,7 @@ using Reexport
 @reexport using Chain
 @reexport using DataFrames
 @reexport using DataFramesMeta
-
+@reexport using DelimitedFiles
 
 
 export
