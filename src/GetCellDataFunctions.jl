@@ -153,3 +153,26 @@ function get_cell_data(::MachineData,
     machine_properties = map(x -> MachineDataProperties(x...),non_zero_elements)
     return machine_properties
 end
+
+
+
+
+
+function get_cell_dataframe(path)
+    cdf = @chain path begin
+        readdlm(_)
+        get_cell_data(MachineState(),_) 
+        DataFrame(CellData = _) 
+        @rtransform :time = :CellData.time 
+        @rtransform :location_index = :CellData.location_index 
+        @rtransform :cell_id = :CellData.cell_id
+        @rtransform :cell_type_label = :CellData.cell_type_label
+        @rtransform :number_machines_state_one = :CellData.number_machines_state_one 
+        @rtransform :number_machines_state_two = :CellData.number_machines_state_two
+        @rtransform :number_machines_state_three = :CellData.number_machines_state_three
+        @rtransform :number_neighbours_different_label = :CellData.number_neighbours_different_label
+        select(_,Not(:CellData))
+        @transform :time = :time .- :time[1]
+    end
+    return cdf
+end
