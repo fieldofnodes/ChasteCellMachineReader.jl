@@ -3,6 +3,8 @@ module ChasteCellMachineReader
 using Reexport
 
 @reexport using Revise
+@reexport using Chain
+@reexport using DataFrames
 
 
 export
@@ -14,6 +16,7 @@ export
     PopulationCountsPerTimeStep,
     TimeVecVariants,
     get_cell_data,
+    get_cell_dataframe,
     shift_time_back_to_zero,
     get_time_vec_variants,
     get_type_count_per_time,
