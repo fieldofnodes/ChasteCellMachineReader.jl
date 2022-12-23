@@ -5,6 +5,8 @@ using Reexport
 @reexport using Revise
 @reexport using Chain
 @reexport using DataFrames
+@reexport using DataFramesMeta
+
 
 
 export
