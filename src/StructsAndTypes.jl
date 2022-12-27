@@ -146,3 +146,28 @@ struct Capsule
     hemisphere_radius::Radius
     cylinder_length::Cylinder
  end
+
+
+ struct CellLabelsTimeSeries
+    neighbour_to_label_0
+    neighbour_to_label_1
+end
+
+struct CellTimeSeries
+    MachineStateTimeSeries
+    CellLabelsTimeSeries
+end
+
+
+struct TimeForDeathRate
+    t::Float64
+end
+
+struct DeathRate
+    d::Float64
+end
+
+struct DeathRateTime
+    d::Float64
+end
+
