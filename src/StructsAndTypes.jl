@@ -114,3 +114,60 @@ struct TimeVecVariants
     shifted_time_vec
     unique_shifted_time_vec
 end
+
+
+"""
+    Time from start of apoptosis to death of a cell
+"""
+struct ApoptosisTime
+    tₐ::Float64
+end
+
+
+"""
+    The radius of a circle
+"""
+struct Radius 
+    r::Float64
+end
+
+
+"""
+    The length of a cylinder
+"""
+struct Cylinder
+    length
+end
+
+"""
+ The structure of a capsule 
+"""
+struct Capsule
+    hemisphere_radius::Radius
+    cylinder_length::Cylinder
+ end
+
+
+ struct CellLabelsTimeSeries
+    neighbour_to_label_0
+    neighbour_to_label_1
+end
+
+struct CellTimeSeries
+    MachineStateTimeSeries
+    CellLabelsTimeSeries
+end
+
+
+struct TimeForDeathRate
+    t::Float64
+end
+
+struct DeathRate
+    d::Float64
+end
+
+struct DeathRateTime
+    d::Float64
+end
+
