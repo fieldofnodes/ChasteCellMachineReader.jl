@@ -7,6 +7,7 @@ using Reexport
 @reexport using DataFrames
 @reexport using DataFramesMeta
 @reexport using DelimitedFiles
+@reexport using CairoMakie
 
 
 export
