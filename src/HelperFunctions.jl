@@ -159,10 +159,10 @@ function get_time_series_labels_diff_to_cell(::MachineState,cell_data)
 
     pop_count_per_dt = [get_population_counts_per_time_step(cell_data,ut) for ut in unique_time]
     
-    ts_neighbour_to_label_0 = [i.count_neighbours_diff_to_cell_0 for i in pop_count_per_dt]
-    ts_neighbour_to_label_1 = [i.count_neighbours_diff_to_cell_1 for i in pop_count_per_dt]
+    ts_neighbour_to_target = [i.count_neighbours_diff_to_target for i in pop_count_per_dt]
+    ts_neighbour_to_attacker = [i.count_neighbours_diff_to_attacker for i in pop_count_per_dt]
 
-    return CellLabelsTimeSeries(ts_neighbour_to_label_0,ts_neighbour_to_label_1)
+    return CellLabelsTimeSeries(ts_neighbour_to_target,ts_neighbour_to_attacker)
 end
 
 
@@ -173,15 +173,15 @@ end
     Get cell population time series, as well as 
     get time series of neighbours different to cell type.
 """
-function get_cell_population_ts(data,growth_rate₁,growth_rate₂)
+function get_cell_population_ts(data,growth_rateₜ,growth_rateₐ)
     @chain data begin
         readdlm(_)
         get_cell_data(MachineState(),_)
         @aside @chain _ begin
             cell_ts = get_population_competition_time_series(
                 MachineState(),_,
-                growth_rate₁,
-                growth_rate₂) 
+                growth_rateₜ,
+                growth_rateₐ) 
         end
         @aside @chain _ begin
             cell_label_ts = get_time_series_labels_diff_to_cell(MachineState(),_)
@@ -189,6 +189,7 @@ function get_cell_population_ts(data,growth_rate₁,growth_rate₂)
     end
     return CellTimeSeries(cell_ts,cell_label_ts)
 end
+
 
 
 
@@ -213,10 +214,10 @@ end
 """
 function get_mean_neighbours_at_time_time_slices(
     data_path,filter_pattern,
-    growth_rate₁,growth_rate₂,time_slices)
+    growth_rateₜ,growth_rateₐ,time_slices)
     mean_neighbours = @chain data_path begin
         filter(x -> occursin(filter_pattern,x),_)    
-        [get_cell_population_ts(i,growth_rate₁,growth_rate₂) 
+        [get_cell_population_ts(i,growth_rateₜ,growth_rateₐ) 
         for i in _]
         [get_count_neighbour_targets(i,time_slices) for i in _]
         reduce(hcat,_)
@@ -239,11 +240,11 @@ end
 """
 function get_mean_competition(
     data_path,filter_pattern,
-    growth_rate₁,growth_rate₂)
+    growth_rateₜ,growth_rateₐ)
     
     c̄ =@chain data_path begin
         filter(x -> occursin(filter_pattern,x),_)
-        [get_cell_population_ts.(i,growth_rate₁,growth_rate₂).MachineStateTimeSeries.competition[end] for i in _]
+        [get_cell_population_ts.(i,growth_rateₜ,growth_rateₐ).MachineStateTimeSeries.competition[end] for i in _]
         mean(_)
     end
 
@@ -270,14 +271,14 @@ end
     Get the population time series and 
     competition time series.
 """
-function get_competition_per_params(path,growth_rate₁,growth_rate₂)
+function get_competition_per_params(path,growth_rateₜ,growth_rateₐ)
     mat_data = readdlm(path)
     cell_data = get_cell_data(MachineState(),mat_data)
     time_series = 
         get_population_competition_time_series(
             MachineState(),
             cell_data,
-            growth_rate₁,growth_rate₂)
+            growth_rateₜ,growth_rateₐ)
     return time_series.competition[end]
 end
 
@@ -300,8 +301,8 @@ function plot_population_neighbours_competition(data::CellTimeSeries,radius)
     p⃗₀ = data.MachineStateTimeSeries.label₀
     p⃗₁ = data.MachineStateTimeSeries.label₁
     c⃗ = data.MachineStateTimeSeries.competition
-    np⃗₀ = data.CellLabelsTimeSeries.neighbour_to_label_0 ./ p⃗₀
-    np⃗₁ = data.CellLabelsTimeSeries.neighbour_to_label_1 ./ p⃗₁
+    np⃗₀ = data.CellLabelsTimeSeries.neighbour_to_target ./ p⃗₀
+    np⃗₁ = data.CellLabelsTimeSeries.neighbour_to_attacker ./ p⃗₁
 
 
     f = Figure(resolution = (800,600))
@@ -407,13 +408,13 @@ end
     Take data path with growth rates of both targets and attackers
     and returns the time series and older model of the competition.
 """
-function simulation_population_TS(::MachineState,path,growth_rate₀,growth_rate₁)
+function simulation_population_TS(::MachineState,path,growth_rate₀,growth_rateₜ)
     Nₜ = @chain path begin
         readdlm(_) 
         get_cell_data(MachineState(),_) 
         get_population_competition_time_series(
                 MachineState(),_,
-                growth_rate₀,growth_rate₁)
+                growth_rate₀,growth_rateₜ)
     end
     return Nₜ
 end
@@ -425,7 +426,7 @@ end
 function simulation_analytical(
     path,
     growth_rate₀,
-    growth_rate₁,    
+    growth_rateₜ,    
     radius,
     time_for_death)
 
@@ -436,7 +437,7 @@ function simulation_analytical(
 
 
     Ñₜ = simulation_population_TS(
-        MachineState(),path,growth_rate₀,growth_rate₁)
+        MachineState(),path,growth_rate₀,growth_rateₜ)
     Nₛₒₗ = compute_pop_ode_sol(Ñₜ.time,Ñₜ.target[1],r,β̃ ) 
     Nₛₒₗ[findall(x -> x > time_death.re,Ñₜ.time)] .= 0
 

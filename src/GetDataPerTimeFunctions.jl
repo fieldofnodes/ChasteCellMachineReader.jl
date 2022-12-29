@@ -15,18 +15,18 @@ end
     This function gets the population counts per each cell label and the counts of machines. Returns the following time series: 
     1. `time_to_match`
     2. `count_target`
-    3. `count_label_1`
+    3. `count_attacker`
     4. `count_total`
     5. `count_machines_state_one`
     6. `count_machines_state_two`
     7. `count_machines_state_three`
     8. `count_machines_total`
-    9. `count_machine_state_one_to_pop_01`
-    10. `count_machine_state_two_to_pop_01`
-    11. `count_machine_state_three_to_pop_01`
-    12. `count_machine_total_to_pop_01`
+    9. `count_machine_state_one_to_attacker`
+    10. `count_machine_state_two_to_attacker`
+    11. `count_machine_state_three_to_attacker`
+    12. `count_machine_total_to_attacker`
     13. `count_neighbours_diff_to_target`
-    14. `count_neighbours_diff_to_cell_1`
+    14. `count_neighbours_diff_to_attacker`
 """
 function get_population_counts_per_time_step(cell_data,time_to_match)
 

@@ -8,6 +8,7 @@ using Reexport
 @reexport using DataFramesMeta
 @reexport using DelimitedFiles
 @reexport using CairoMakie
+@reexport using Dates
 
 
 export
@@ -18,6 +19,15 @@ export
     MachineStateTimeSeries,
     PopulationCountsPerTimeStep,
     TimeVecVariants,
+    ApoptosisTime,
+    Radius,
+    Cylinder,
+    Capsule,
+    CellLabelsTimeSeries,
+    CellTimeSeries,
+    TimeForDeathRate,
+    DeathRate,
+    DeathRateTime,
     get_cell_data,
     get_cell_dataframe,
     shift_time_back_to_zero,
@@ -64,6 +74,7 @@ include("GetTimeRelevantFunctions.jl")
 include("GetCompetitionScoreFunctions.jl")
 include("HelperFunctions.jl")
 end
+
 
 
 
