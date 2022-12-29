@@ -46,8 +46,8 @@ function get_population_competition_time_series(::MachineState,cell_data,growth_
     time_vars = get_time_vec_variants(MachineState(),cell_data)
 
     population_counts_per_time_step = [get_population_counts_per_time_step(cell_data,t) for t in time_vars.unique_time_vec]
-    time_series₁ = [p.count_label_0 for p in population_counts_per_time_step]
-    time_series₂ = [p.count_label_1 for p in population_counts_per_time_step]
+    time_series₁ = [p.count_target for p in population_counts_per_time_step]
+    time_series₂ = [p.count_attacker for p in population_counts_per_time_step]
    # competition = 
    #     get_competition_score_function(
    #         MachineState(),time_series₁,time_series₂,time_vars.unique_shifted_time_vec,growth_rate₁,growth_rate₂)

@@ -85,19 +85,19 @@ end
 """
 struct PopulationCountsPerTimeStep
     time_to_match
-    count_label_0
-    count_label_1
+    count_target
+    count_attacker
     count_total
     count_machines_state_one
     count_machines_state_two
     count_machines_state_three
     count_machines_total
-    count_machine_state_one_to_pop_01
-    count_machine_state_two_to_pop_01
-    count_machine_state_three_to_pop_01
-    count_machine_total_to_pop_01
-    count_neighbours_diff_to_cell_0
-    count_neighbours_diff_to_cell_1
+    count_machine_state_one_to_attacker
+    count_machine_state_two_to_attacker
+    count_machine_state_three_to_attacker
+    count_machine_total_to_attacker
+    count_neighbours_diff_to_target
+    count_neighbours_diff_to_attacker
 end
 
 
@@ -149,8 +149,8 @@ struct Capsule
 
 
  struct CellLabelsTimeSeries
-    neighbour_to_label_0
-    neighbour_to_label_1
+    neighbour_to_target
+    neighbour_to_attacker
 end
 
 struct CellTimeSeries
