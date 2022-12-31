@@ -493,3 +493,26 @@ function get_realisation_number(data_path)
     end
     return realisation
 end
+    
+    
+        function get_Nt(data::DataFrame)
+        return @chain data begin
+                    @by([:cell_type_label,:time],
+                        :N = size(:cell_type_label,1))
+        end
+    end
+
+    function get_Nₜ(data::DataFrame)
+        return @chain data begin
+            @subset @byrow :cell_type_label == 0
+        end
+    end
+    function compute_pop_ode_sol(
+        Ñₜ::DataFrame,Δt,Ñ₀,β̃,r̃ₜ)
+        t = range(minimum(Ñₜ.time),maximum(Ñₜ.time),step = Δt) 
+        time_to_death = compute_time_extinction(Ñ₀,β̃,r̃ₜ)
+        Nₛₒₗ = ChasteCellMachineReader.compute_pop_ode_sol(t,Ñ₀,r̃ₜ,β̃)
+        Nₛₒₗ[findall(x -> x > time_to_death.re,t)] .= 0
+        return Nₛₒₗ
+    end
+
