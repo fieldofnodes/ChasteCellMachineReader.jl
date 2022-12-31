@@ -513,6 +513,8 @@ end
         time_to_death = compute_time_extinction(Ñ₀,β̃,r̃ₜ)
         Nₛₒₗ = ChasteCellMachineReader.compute_pop_ode_sol(t,Ñ₀,r̃ₜ,β̃)
         Nₛₒₗ[findall(x -> x > time_to_death.re,t)] .= 0
-        return Nₛₒₗ
+        return DataFrame(
+                    time = t, 
+                    N = Nₛₒₗ)
     end
 
