@@ -64,7 +64,9 @@ export
     simulation_analytical,
     get_neighbour_radius,
     get_radius,
-    get_realisation_number
+    get_realisation_number,
+    get_Nₜ,
+    get_Nt
 
 
 include("StructsAndTypes.jl")
