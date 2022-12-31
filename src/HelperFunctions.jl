@@ -386,7 +386,7 @@ end
     Compute the N(t) ode of the per capita targets as they sit on 
     the boundary of the circle between the targets and attackers.
 """
-function compute_pop_ode_sol(t,N₀,r,b) 
+function compute_pop_ode_sol(t,N₀,r,β) 
     βr = (β ./ r)
     rt2 = (r.*t) ./ 2 
     pop = (βr .+ (√N₀ .- βr) .* exp.(rt2)) .^2
