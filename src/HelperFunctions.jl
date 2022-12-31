@@ -518,3 +518,11 @@ end
                     N = Nₛₒₗ)
     end
 
+    
+    function add_realisations(
+        data::DataFrame,
+        realisations::Int64)
+        data.realisations .= realisations
+        return data
+    end
+
