@@ -67,6 +67,7 @@ export
     get_radius,
     get_realisation_number,
     get_Nₜ,
+    get_Nₐ,
     get_Nt,
     add_realisations,
     get_mean_pop_with_std_errors,
