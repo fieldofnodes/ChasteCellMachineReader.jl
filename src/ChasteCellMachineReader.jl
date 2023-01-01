@@ -11,7 +11,7 @@ using Reexport
 @reexport using Dates
 @reexport using Statistics
 
-using Pkg
+
 export
     MachineState,
     MachineData,
