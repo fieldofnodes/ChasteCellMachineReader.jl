@@ -9,8 +9,9 @@ using Reexport
 @reexport using DelimitedFiles
 @reexport using CairoMakie
 @reexport using Dates
+@reexport using Statistics
 
-
+using Pkg
 export
     MachineState,
     MachineData,
