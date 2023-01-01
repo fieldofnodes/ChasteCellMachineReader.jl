@@ -386,7 +386,7 @@ end
     Compute the N(t) ode of the per capita targets as they sit on 
     the boundary of the circle between the targets and attackers.
 """
-function compute_pop_ode_sol(t,N₀,r,b) 
+function compute_pop_ode_sol(t,N₀,r,β) 
     βr = (β ./ r)
     rt2 = (r.*t) ./ 2 
     pop = (βr .+ (√N₀ .- βr) .* exp.(rt2)) .^2
@@ -492,4 +492,88 @@ function get_realisation_number(data_path)
         parse(Float64,_)
     end
     return realisation
+end
+
+"""
+    Get total population time series, simulated N
+"""
+function get_Nt(data::DataFrame)
+    return @chain data begin
+                @by([:cell_type_label,:time],
+                    :N = size(:cell_type_label,1))
+    end
+end
+
+"""
+    Get target population from the the total population time series    
+"""
+function get_Nₜ(data::DataFrame)
+    return @chain data begin
+        @subset @byrow :cell_type_label == 0
+    end
+end
+
+
+
+"""
+    Get attacker population from the the total population time series
+"""
+function get_Nₐ(data::DataFrame)
+    return @chain data begin
+        @subset @byrow :cell_type_label == 1
+    end
+end
+
+"""
+    Compute the ODE solutions using the simulation data to grab the time duration.
+"""
+function compute_pop_ode_sol(
+    Ñₜ::DataFrame,Δt,Ñ₀,β̃,r̃ₜ)
+    t = range(minimum(Ñₜ.time),maximum(Ñₜ.time),step = Δt) 
+    time_to_death = compute_time_extinction(Ñ₀,β̃,r̃ₜ)
+    Nₛₒₗ = ChasteCellMachineReader.compute_pop_ode_sol(t,Ñ₀,r̃ₜ,β̃)
+    Nₛₒₗ[findall(x -> x > time_to_death.re,t)] .= 0
+    return DataFrame(
+                time = t, 
+                N = Nₛₒₗ)
+end
+
+"""
+    Take a dataframe and the number of realisations and includes this as a 
+    column in the dataframe.
+"""
+function add_realisations(
+    data::DataFrame,
+    realisations::Int64)
+    data.realisations .= realisations
+    return data
+end
+
+
+"""
+    Compute the mean population with standard error bands.
+    If one wants to obtain for targets or attackers, simply
+    take that subset prior to calling this functions as it does
+    not do so.
+"""
+function get_mean_pop_with_std_errors(data::DataFrame)
+    return @chain data begin
+                reduce(vcat,_.Nₜ) 
+                @by(:time,
+                :Ñ = mean(:N),
+                :sdÑ = std(:N),
+                :n = :realisations)
+                @rtransform :sdÑ = isnan(:sdÑ) ? 0 : :sdÑ 
+                @rtransform :Ñ₊ₛₑ = :Ñ + std_error(:sdÑ,:n)
+                @rtransform :Ñ₋ₛₑ = :Ñ - std_error(:sdÑ,:n)
+        end
+end
+
+
+"""
+    Compute the standard error from the standard deviation
+    and the count of observartions.
+"""
+function std_error(σ,n)
+    return σ/√n
 end
