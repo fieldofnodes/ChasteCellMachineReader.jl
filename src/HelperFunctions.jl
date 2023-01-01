@@ -569,3 +569,11 @@ function get_mean_pop_with_std_errors(data::DataFrame)
         end
 end
 
+
+"""
+    Compute the standard error from the standard deviation
+    and the count of observartions.
+"""
+function std_error(σ,n)
+    return σ/√n
+end
