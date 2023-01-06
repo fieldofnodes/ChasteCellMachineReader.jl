@@ -383,17 +383,6 @@ end
 
 
 """
-    Compute the N(t) ode of the per capita targets as they sit on 
-    the boundary of the circle between the targets and attackers.
-"""
-function compute_pop_ode_sol(t,N₀,r,β) 
-    βr = (β ./ r)
-    rt2 = (r.*t) ./ 2 
-    pop = (βr .+ (√N₀ .- βr) .* exp.(rt2)) .^2
-    return pop 
-end
-
-"""
     Compute the time to extinction.
 """
 function compute_time_extinction(N₀,β,r)
@@ -536,6 +525,20 @@ function compute_pop_ode_sol(
     return DataFrame(
                 time = t, 
                 N = Nₛₒₗ)
+end
+
+
+"""
+    Compute the N(t) ode of the per capita targets as they sit on 
+    the boundary of the circle between the targets and attackers.
+"""
+function compute_pop_ode_sol(t,N₀,r,β) 
+    βr = (β ./ r)
+    rt2 = (r.*t) ./ 2 
+    Nₛₒₗ = (βr .+ (√N₀ .- βr) .* exp.(rt2)) .^2
+    time_to_death = compute_time_extinction(N₀,β,r)
+    Nₛₒₗ[findall(x -> x > time_to_death.re,t)] .= 0
+    return Nₛₒₗ
 end
 
 """
