@@ -574,6 +574,28 @@ end
 
 
 """
+Compute the mean population with standard error bands.
+If one wants to obtain for targets or attackers, simply
+take that subset prior to calling this functions as it does
+not do so. Using a dynamic input variable
+"""
+function get_mean_pop_with_std_errors(
+    data)
+    return @chain data begin
+                reduce(vcat,_.Nₜ) 
+                @by(:time,
+                :Ñ = mean(:N),
+                :sdÑ = std(:N),
+                :n = :realisations)
+                @rtransform :sdÑ = isnan(:sdÑ) ? 0 : :sdÑ 
+                @rtransform :Ñ₊ₛₑ = :Ñ + std_error(:sdÑ,:n)
+                @rtransform :Ñ₋ₛₑ = :Ñ - std_error(:sdÑ,:n)
+        end
+end
+
+
+
+"""
     Compute the standard error from the standard deviation
     and the count of observartions.
 """
