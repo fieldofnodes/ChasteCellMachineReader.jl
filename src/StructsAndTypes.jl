@@ -171,3 +171,6 @@ struct DeathRateTime
     d::Float64
 end
 
+struct N₀AlreadySet
+    n₀
+end

@@ -644,3 +644,39 @@ function convert_missing_to_zero(data)
         end
         return df
 end
+
+
+
+
+"""
+    A once-off look behind patter when we want to change the patter
+    of the look behind but still search for [0-9.]{1.5} after
+"""
+function input_neg_lookbehind(pattern)
+    rx = Regex(string("(?<=",pattern,")[0-9.]{1,5}"))
+    return rx
+end
+
+"""
+    Take the regex patter, the string and the regex function to parse a 
+    character into a Float64 type.
+"""
+function parse_regex_float_match(
+    string_for_match,
+    pattern_to_match,
+    regex_match_function)
+
+    rx = regex_match_function(pattern_to_match)
+    m = match(rx,string_for_match,).match
+    
+    return parse(Float64,m)
+end
+
+
+"""
+    Set the initial population with the initial population
+    Allows to keep the same interface
+"""
+function N₀(n₀::N₀AlreadySet)
+    return n₀.n₀
+end

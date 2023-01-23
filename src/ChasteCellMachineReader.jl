@@ -24,6 +24,7 @@ export
     Radius,
     Cylinder,
     Capsule,
+    N₀AlreadySet,
     CellLabelsTimeSeries,
     CellTimeSeries,
     TimeForDeathRate,
