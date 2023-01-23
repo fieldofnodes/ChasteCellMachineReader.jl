@@ -71,7 +71,10 @@ export
     get_Nt,
     add_realisations,
     get_mean_pop_with_std_errors,
-    std_error
+    std_error,
+    missing_to_zero,
+    convert_missing_to_zero,
+    if_missing_then_zero
 
 
 include("StructsAndTypes.jl")

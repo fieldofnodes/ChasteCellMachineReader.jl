@@ -602,3 +602,45 @@ end
 function std_error(σ,n)
     return σ/√n
 end
+
+
+
+"""
+    If a value is missing, then output a zero
+    Missing -> 0
+"""
+missing_to_zero(m::Missing) = 0
+
+
+"""
+    Function that takes an input and if missing than outputs 0 otherwise
+    return what that number is.
+"""
+function if_missing_then_zero(x) 
+    @assert isreal(x)|ismissing(x) "Input should be a Real number of missing"
+    x̂ = ismissing(x) ? missing_to_zero(x) : x
+    return x̂
+end
+
+
+
+"""
+    Functions specifice to the chaste cell reader where we convert
+    values per cell type label (0,1,3) and outputs to zero
+    Function needs to be generalised.
+"""
+function convert_missing_to_zero(data) 
+    df = @chain data begin 
+            unstack(_,:cell_type_label,:N,renamecols=x->Symbol(:label_, x))
+            @rtransform :label_0 = if_missing_then_zero(:label_0)
+            @rtransform :label_3 = if_missing_then_zero(:label_3) 
+            @rtransform :label_target = :label_0 + :label_3
+            @select :time :label_1 :label_target
+            stack(_,[:label_1, :label_target],:time)
+            @rtransform :variable = :variable == "label_1" ? 1 : 0
+            rename(_,:variable => :cell_type_label) 
+            rename(_,:value => :N)
+            @select :cell_type_label :time :N
+        end
+        return df
+end
