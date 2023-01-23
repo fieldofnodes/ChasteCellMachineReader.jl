@@ -672,7 +672,6 @@ function parse_regex_float_match(
     return parse(Float64,m)
 end
 
-
 """
     Set the initial population with the initial population
     Allows to keep the same interface

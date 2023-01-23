@@ -75,7 +75,10 @@ export
     std_error,
     missing_to_zero,
     convert_missing_to_zero,
-    if_missing_then_zero
+    if_missing_then_zero,
+    input_neg_lookbehind,
+    parse_regex_float_match
+
 
 
 include("StructsAndTypes.jl")
