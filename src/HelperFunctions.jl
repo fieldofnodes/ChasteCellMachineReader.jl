@@ -422,14 +422,19 @@ function simulation_analytical(
     Ñ₀ = N₀(Radius(radius))
 
     β̃  = β(dᵣ(TimeForDeathRate(time_for_death)))
-    time_death = compute_time_extinction.(Ñ₀,β̃ ,growth_rate₀)
-
-
     Ñₜ = simulation_population_TS(
         MachineState(),path,growth_rate₀,growth_rateₜ)
     Nₛₒₗ = compute_pop_ode_sol(Ñₜ.time,Ñₜ.target[1],r,β̃ ) 
-    Nₛₒₗ[findall(x -> x > time_death[1].re,Ñₜ.time)] .= 0
-
+    
+    
+    time_to_death = compute_time_extinction.(Ñ₀,β̃ ,growth_rate₀)
+    if iszero(time_to_death[1].im)
+        Nₛₒₗ[findall(x -> x > time_to_death[1].re,Ñₜ.time)] .= 0
+    elseif !iszero(time_to_death[1].im)
+        Nₛₒₗ = Nₛₒₗ
+    else
+        # nothing
+    end
     return (N_sim = Ñₜ,N_ana = Nₛₒₗ)
 end
 
@@ -521,7 +526,15 @@ function compute_pop_ode_sol(
     t = range(minimum(Ñₜ.time),maximum(Ñₜ.time),step = Δt) 
     time_to_death = compute_time_extinction(Ñ₀,β̃,r̃ₜ)
     Nₛₒₗ = ChasteCellMachineReader.compute_pop_ode_sol(t,Ñ₀,r̃ₜ,β̃)
-    Nₛₒₗ[findall(x -> x > time_to_death.re,t)] .= 0
+    
+    if iszero(time_to_death[1].im)
+        Nₛₒₗ[findall(x -> x > time_to_death[1].re,t)] .= 0
+    elseif !iszero(time_to_death[1].im)
+        Nₛₒₗ = Nₛₒₗ
+    else
+        # nothing
+    end
+
     return DataFrame(
                 time = t, 
                 N = Nₛₒₗ)
@@ -537,7 +550,14 @@ function compute_pop_ode_sol(t,N₀,r,β)
     rt2 = (r.*t) ./ 2 
     Nₛₒₗ = (βr .+ (√N₀ .- βr) .* exp.(rt2)) .^2
     time_to_death = compute_time_extinction(N₀,β,r)
-    Nₛₒₗ[findall(x -> x > time_to_death[1].re,t)] .= 0
+    
+    if iszero(time_to_death[1].im)
+        Nₛₒₗ[findall(x -> x > time_to_death[1].re,t)] .= 0
+    elseif !iszero(time_to_death[1].im)
+        Nₛₒₗ = Nₛₒₗ
+    else
+        # nothing
+    end
     return Nₛₒₗ
 end
 
@@ -592,6 +612,7 @@ function get_mean_pop_with_std_errors(
                 @rtransform :Ñ₋ₛₑ = :Ñ - std_error(:sdÑ,:n)
         end
 end
+
 
 
 
