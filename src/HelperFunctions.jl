@@ -537,7 +537,7 @@ function compute_pop_ode_sol(t,N₀,r,β)
     rt2 = (r.*t) ./ 2 
     Nₛₒₗ = (βr .+ (√N₀ .- βr) .* exp.(rt2)) .^2
     time_to_death = compute_time_extinction(N₀,β,r)
-    Nₛₒₗ[findall(x -> x > time_to_death.re,t)] .= 0
+    Nₛₒₗ[findall(x -> x > time_to_death[1].re,t)] .= 0
     return Nₛₒₗ
 end
 
