@@ -428,7 +428,7 @@ function simulation_analytical(
     Ñₜ = simulation_population_TS(
         MachineState(),path,growth_rate₀,growth_rateₜ)
     Nₛₒₗ = compute_pop_ode_sol(Ñₜ.time,Ñₜ.target[1],r,β̃ ) 
-    Nₛₒₗ[findall(x -> x > time_death.re,Ñₜ.time)] .= 0
+    Nₛₒₗ[findall(x -> x > time_death[1].re,Ñₜ.time)] .= 0
 
     return (N_sim = Ñₜ,N_ana = Nₛₒₗ)
 end
