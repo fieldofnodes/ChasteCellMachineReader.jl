@@ -386,10 +386,10 @@ end
     Compute the time to extinction.
 """
 function compute_time_extinction(N₀,β,r)
-    twodivr = 2/r
-    βdivr = β/r
-    divβr = -βdivr/(√N₀ - βdivr )
-    return twodivr * log(Complex(divβr))
+    twodivr = 2 ./ r
+    βdivr = β ./ r
+    divβr = -βdivr ./ (√N₀ .- βdivr )
+    return twodivr .* log.(Complex.(divβr))
 end
 
 
