@@ -78,6 +78,7 @@ export
     if_missing_then_zero,
     input_neg_lookbehind,
     parse_regex_float_match,
+    get_cell_dataframe_TS,
     plot_cell_populations_TS
 
 
