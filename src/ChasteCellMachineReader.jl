@@ -77,7 +77,8 @@ export
     convert_missing_to_zero,
     if_missing_then_zero,
     input_neg_lookbehind,
-    parse_regex_float_match
+    parse_regex_float_match,
+    plot_cell_populations_TS
 
 
 
@@ -87,6 +88,7 @@ include("GetDataPerTimeFunctions.jl")
 include("GetTimeRelevantFunctions.jl")
 include("GetCompetitionScoreFunctions.jl")
 include("HelperFunctions.jl")
+include("PlotCellData.jl")
 end
 
 
