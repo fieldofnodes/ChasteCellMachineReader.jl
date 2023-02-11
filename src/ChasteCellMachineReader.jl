@@ -77,7 +77,8 @@ export
     convert_missing_to_zero,
     if_missing_then_zero,
     input_neg_lookbehind,
-    parse_regex_float_match
+    parse_regex_float_match,
+    get_cell_dataframe_TS
 
 
 
