@@ -79,7 +79,10 @@ export
     input_neg_lookbehind,
     parse_regex_float_match,
     get_cell_dataframe_TS,
-    plot_cell_populations_TS
+    plot_cell_populations_TS,
+    new_folder_name,
+    generate_cell_output_path,
+    make_output_path
 
 
 

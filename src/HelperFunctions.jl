@@ -700,3 +700,44 @@ end
 function N₀(n₀::N₀AlreadySet)
     return n₀.n₀
 end
+
+
+
+
+"""
+    Take cell path and return the folder name
+    which comes from the basename of the filename
+"""
+function new_folder_name(cell_path)
+    folder_name = @chain cell_path begin
+        basename(_)    
+        splitext(_)
+        _[1]
+        replace(_,"_machinestate"=>"")
+    end
+    return folder_name
+end
+
+
+"""
+    Generate path from cell path to save to file
+    input the cell path and an output descriptor 
+"""
+function generate_cell_output_path(cell_path,output_desc,file_ext)
+    base = basename(cell_path)
+    df_path = replace(base,".dat" => ".$(file_ext)")
+    output = string(output_desc,"_",df_path)
+    return output
+end
+
+"""
+    From cell path, output description and new extension
+    output the new path
+"""
+function make_output_path(base_path,cell_path,output_desc,file_ext)
+    output_folder = new_folder_name(cell_path)
+    output_file = generate_cell_output_path(cell_path,output_desc,file_ext)
+    return  base_path *"/"*
+            output_folder *"/"* 
+            output_file
+end
