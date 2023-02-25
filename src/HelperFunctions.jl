@@ -371,3 +371,153 @@ function simulation_population_TS(::MachineState,path,growth_rate₀,growth_rate
     end
     return Nₜ
 end
+
+
+
+
+
+function optimise_β(
+    ::Local,
+    loss,
+    u0)
+    optfunc = Optimization.OptimizationFunction(loss, Optimization.AutoForwardDiff())
+    optprob = Optimization.OptimizationProblem(optfunc,u0)
+    opt_param = Optimization.solve(optprob, BFGS())
+    return opt_param.u[1]
+end
+
+function optimise_β(
+        ::Global,
+        loss,
+        u0)
+        optfunc = Optimization.OptimizationFunction(loss, Optimization.AutoForwardDiff())
+        optprob = Optimization.OptimizationProblem(optfunc,u0,lb = [0.0], ub = [10.0])
+        opt_param = Optimization.solve(
+            optprob, 
+            BBO_adaptive_de_rand_1_bin_radiuslimited(), 
+            maxiters = 100000,
+            maxtime = 1000.0)
+        return opt_param.u[1]
+end
+
+
+function optimise_K(
+    ::Global,
+    loss,
+    u0,
+    bounds::Tuple)
+    optfunc = Optimization.OptimizationFunction(loss, Optimization.AutoForwardDiff())
+    optprob = Optimization.OptimizationProblem(optfunc,u0,lb = bounds[1], ub = bounds[2])
+    opt_param = Optimization.solve(
+        optprob, 
+        BBO_adaptive_de_rand_1_bin_radiuslimited(), 
+        maxiters = 100000,
+        maxtime = 1000.0)
+    return opt_param.u[1]
+end
+
+
+function get_Nₜ_vec(data::DataFrame)
+    return data.N
+end
+
+function get_time_vec(data::DataFrame)
+    return data.time
+end
+
+function test_compute_pop_ode_sol(t,N₀,r,β) 
+    βr = (β ./ r)
+    rt2 = (r .* t) ./ 2 
+    Nₛₒₗ = (βr .+ (√N₀ .- βr) .* exp.(rt2)) .^2
+    time_to_death = compute_time_extinction(N₀,β,r)
+    
+    if iszero(time_to_death[1].im)
+        Nₛₒₗ[findall(x -> x > time_to_death[1].re,t)] .= 0
+    elseif !iszero(time_to_death[1].im)
+        Nₛₒₗ = Nₛₒₗ
+    else
+        # nothing
+    end
+    return Nₛₒₗ
+end
+
+
+function first_analytical_solution(time_vec,N₀,r)
+    fun(u) = test_compute_pop_ode_sol(time_vec,N₀,r,u) 
+    return fun
+end
+
+function myloss(analytical_fun,data)
+    loss(u,p=nothing) = sum(abs2.(analytical_fun(u) .- data))
+    return loss
+end
+
+function convert_vecs_to_mat(data)
+    return reduce(hcat,data.N_vec)
+end
+
+function get_death_rate(β)
+    cᵣ = 0.5
+    cylₗ = 3.0
+    l = cₗ(cᵣ,cylₗ)
+    a = cₐ(cᵣ,cylₗ)
+    return DeathRate((β*l)/(2*√(π*a)))
+end 
+
+function get_death_rate(::CellBoundaryNormal,β)
+    cᵣ = 0.5
+    cylₗ = 3.0
+    l = cᵣ*2
+    a = cₐ(cᵣ,cylₗ)
+    return DeathRate((β*l)/(2*√(π*a)))
+
+end 
+
+
+function get_time_to_die_β(d::DeathRate)
+    return DeathRateTime(log(2)/d.d)
+end     
+
+function get_time_to_die_β(β)
+    cᵣ = 0.5
+    cylₗ = 3.0
+    l = cₗ(cᵣ,cylₗ)
+    a = cₐ(cᵣ,cylₗ)
+    dₜ = (log(2)*2*√(π*a))/(β*l)
+    return dₜ
+end 
+
+
+
+function get_death_rate(
+    k₁::K₁,
+    tₐ::ApoptosisTime,
+    t_t6ss::T6SSKineticsPositionTime,
+    t_cell_div::CellDivisionTime,
+    ϵ)
+
+    p₁ = π*√(2/ϵ)
+    p₂ = t_t6ss.t/t_cell_div.t
+    p₃ = log(2)/k₁.k₁
+    return DeathRate(log(2)/(tₐ.tₐ + p₁*p₂*p₃))
+end
+
+
+function get_death_rate(
+    ::DeathRateMichaelisMentenForm,
+    k₁::Vector{K₁},
+    tₐ::ApoptosisTime)
+    d(K) = [log(2) ./ tₐ.tₐ .* (k.k₁ ./ (K .+ k.k₁)) for k in k₁]
+    return d
+end
+
+
+
+function get_death_rate(k₁::K₁)
+    d = get_death_rate(k₁,
+        ApoptosisTime(target_time_for_death),
+        T6SSKineticsPositionTime(t_t6ss),
+        CellDivisionTime(target_mean_cycle_time),
+        ϵ)  
+        return d
+end
