@@ -417,6 +417,7 @@ function optimise_K(
 end
 
 
+
 function get_Nₜ_vec(data::DataFrame)
     return data.N
 end
@@ -440,6 +441,7 @@ function test_compute_pop_ode_sol(t,N₀,r,β)
     end
     return Nₛₒₗ
 end
+
 
 
 function first_analytical_solution(time_vec,N₀,r)
