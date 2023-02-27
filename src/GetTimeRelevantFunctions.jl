@@ -25,3 +25,9 @@ function get_time_vec_variants(::MachineState,cell_data)
         shifted_time_vec,
         unique_shifted_time_vec)
 end
+
+
+
+function get_time_vec(data::DataFrame)
+    return data.time
+end

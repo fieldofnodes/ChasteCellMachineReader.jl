@@ -238,3 +238,19 @@ function get_cell_dataframe_TS(chaste_path_dat_file)
 
     return all_TS
 end
+
+"""
+    The area a capule with a cylinder length l and radius r
+"""
+cₐ(r,l) = π*r^2 + 2*r*l
+
+
+"""
+    The length a capule with a cylinder length l and radius r
+"""
+cₗ(r,l)  = 2*r + l
+
+
+"""
+    Using Dates package, get today's date and convert to YYYMMDD format
+"""

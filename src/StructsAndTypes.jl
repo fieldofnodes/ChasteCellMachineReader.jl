@@ -174,3 +174,24 @@ end
 struct N₀AlreadySet
     n₀
 end
+
+
+struct K₁   
+    k₁
+end
+
+
+struct T6SSKineticsPositionTime
+    t
+end
+
+struct CellDivisionTime
+    t
+end
+
+struct Local end
+struct Global end
+struct DeathRateMichaelisMentenForm end
+struct CellBoundaryNormal end
+
+
