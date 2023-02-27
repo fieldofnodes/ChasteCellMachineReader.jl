@@ -115,7 +115,11 @@ end
 
 
 
-function get_death_rate(k₁::K₁)
+function get_death_rate(
+            k₁::K₁,
+            target_time_for_death,
+            t_t6ss,
+            target_mean_cycle_time,ϵ)
     d = get_death_rate(k₁,
         ApoptosisTime(target_time_for_death),
         T6SSKineticsPositionTime(t_t6ss),
