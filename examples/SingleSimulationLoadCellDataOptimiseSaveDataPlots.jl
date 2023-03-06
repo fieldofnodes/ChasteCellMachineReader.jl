@@ -14,6 +14,47 @@ using DataFramesMeta
 using CSV
 using CairoMakie
 
+// # Functions
+
+
+    """        
+    plot_optimal_solution(
+        sim_data,
+        opt_data_local,opt_data_global,
+        param_label,param_value)
+    :sim_data: DataFrame - simulation time series
+    :opt_data_local: NamedTuple - solution,β,d for global solution
+    :opt_data_global: NamedTuple - solution,β,d for global solution
+    :param_label: String - Parameter label
+    :param_value: Float64 - parameter value
+
+    Returns CairoMakie based plot
+
+    """
+function plot_optimal_solution(
+    sim_data,
+    opt_data_local,opt_data_global,
+    param_label,param_value)
+    t = sim_data.time
+    N = sim_data.target
+    opt_sol_local = opt_data_local[:opt_sol]
+    opt_param_local = opt_data_local[:β]
+    d_β_local = opt_data_local[:d]
+    opt_sol_global = opt_data_global[:opt_sol]
+    opt_param_global = opt_data_global[:β]
+    d_β_global = opt_data_global[:d]
+
+    f = Figure(resolution = (800,600))
+        ax = Axis(f[1,1],xlabel = L"T", ylabel = L"N")
+        lines!(ax,t,N,label = "data, $(param_label) = $(param_value)")
+        lines!(ax,t,opt_sol_local, label="Local βₒₚₜ ≈ $(round(opt_param_local,digits=3))\nd_from_β = $(round(d_β_local,digits=3))")
+        lines!(ax,t,opt_sol_global, label="Global βₒₚₜ ≈ $(round(opt_param_global,digits=3))\nd_from_β = $(round(d_β_global,digits=3))")
+        axislegend()
+    return f
+end
+
+//
+
 // # Input parameters
     sim_type = "CircularDomain"
     chaste_data = "chaste_data/"
@@ -149,4 +190,4 @@ using CairoMakie
 
 //
 
- 
+
