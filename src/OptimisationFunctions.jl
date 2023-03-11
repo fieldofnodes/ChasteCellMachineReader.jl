@@ -92,6 +92,9 @@ end
 
 
 
+
+    
+
 """
 get_opt_param_sol(::Local,data::DataFrame,p::Vector)
 ::Local - optimise with a local optimiser
@@ -100,18 +103,19 @@ p::Vector - target_time_for_death,target_mean_cycle_time
 """
 function get_opt_param_sol(::Local,
     data::DataFrame,p::Vector)
-    target_time_for_death,target_mean_cycle_time  = p
+    k₁,tₐ,t_t6ss,t_cell_div,ϵ  = p
     t = data.time
     N = data.target
     N₀ = N[1]
-    u = [β(dᵣ(TimeForDeathRate(target_time_for_death)))]
-    rₜ = log(2)/target_mean_cycle_time 
+    death_rate = get_death_rate(k₁,tₐ,t_t6ss,t_cell_div,ϵ)
+    u = [β(death_rate)]
+    rₜ = log(2)/t_cell_div
     ana_func = first_analytical_solution(t,N₀,rₜ)
     loss_func = myloss(ana_func,N)
     opt_param_local = optimise_β(Local(),loss_func,u)
     opt_sol_local = ana_func(opt_param_local)
     d_β_local = get_death_rate(opt_param_local).d
-    return(β = opt_param_local,d = d_β_local,opt_sol = opt_sol_local)
+    return(β = opt_param_local,d = d_β_local,opt_sol = opt_sol_local,d_theory = death_rate.d)
 end
 
 """
@@ -122,16 +126,17 @@ p::Vector - target_time_for_death,target_mean_cycle_time
 """
 function get_opt_param_sol(::Global,
     data::DataFrame,p::Vector)
-    target_time_for_death,target_mean_cycle_time  = p
+    k₁,tₐ,t_t6ss,t_cell_div,ϵ  = p
     t = data.time
     N = data.target
     N₀ = N[1]
-    u = [β(dᵣ(TimeForDeathRate(target_time_for_death)))]
-    rₜ = log(2)/target_mean_cycle_time 
+    death_rate = get_death_rate(k₁,tₐ,t_t6ss,t_cell_div,ϵ)
+    u = [β(death_rate)]
+    rₜ = log(2)/t_cell_div
     ana_func = first_analytical_solution(t,N₀,rₜ)
     loss_func = myloss(ana_func,N)
     opt_param_global = optimise_β(Global(),loss_func,u)
     opt_sol_global = ana_func(opt_param_global)
     d_β_global = get_death_rate(opt_param_global).d
-    return(β = opt_param_global,d = d_β_global,opt_sol = opt_sol_global)
+    return(β = opt_param_global,d = d_β_global,opt_sol = opt_sol_global,d_theory = death_rate.d)
 end
