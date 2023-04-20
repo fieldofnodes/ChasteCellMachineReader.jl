@@ -239,6 +239,76 @@ function get_cell_dataframe_TS(chaste_path_dat_file)
     return all_TS
 end
 
+
+
+
+""" 
+    From String -> DataFrame    
+    String: path to the chaste .dat file from 
+    simulation of the cell populations
+    Output dataframe will have the time series
+    time, target, attacker, m₁, m₂, m₃, m, neigh_diff_to_attacker, neigh_diff_to_target
+"""
+function get_cell_dataframe_TS(::DataAllCellLabels,chaste_path_dat_file)
+    label_dict = Dict(0 => "target", 1 => "attacker", 3 => "infected")
+    map_label(x) = label_dict[x]
+    # Get cell dataframe and add attacker and target column
+    cell_df = @chain chaste_path_dat_file begin
+        get_cell_dataframe(_)
+        @rtransform :cell_type = map_label(:cell_type_label)
+    end
+    
+
+
+    # extract attacker and target time series
+    attacker_target_TS = @chain cell_df begin
+        @by([:cell_type,:time],
+            :N = size(:cell_type,1))
+        unstack(_,
+        :time,:cell_type,:N,fill=0)
+    end
+
+    # extract machines time series
+    machines_TS = @chain cell_df begin
+        @rsubset :cell_type_label == 1
+        @by([:cell_type_label,:time],
+            :N = size(:cell_type_label,1),
+            :m₁ = sum(:number_machines_state_one),
+            :m₂ = sum(:number_machines_state_two),
+            :m₃ = sum(:number_machines_state_three))
+        @rtransform :mₜ = :m₁ + :m₂ + :m₃ 
+        @select $(Not([:cell_type_label,:N]))
+    end
+
+
+    # extract target time series
+    neighbours_TS = @chain cell_df begin
+        @select :time :cell_type :number_neighbours_different_label 
+        @by([:time, :cell_type],
+            :neigh = sum(:number_neighbours_different_label))
+        unstack(_,
+            :time,:cell_type,:neigh,
+            fill=0,
+            renamecols=x->Symbol(:neigh_diff_to_, x))
+    end
+
+
+    # join all time series together
+    all_TS = @chain attacker_target_TS begin
+        innerjoin(_,neighbours_TS,on=:time)
+        innerjoin(_,machines_TS,on=:time)
+        @select :time :target :attacker :m₁ :m₂ :m₃ :mₜ :neigh_diff_to_attacker :neigh_diff_to_target
+    end
+
+    return all_TS
+end
+
+
+
+
+
+
+
 """
     The area a capule with a cylinder length l and radius r
 """
@@ -250,7 +320,3 @@ cₐ(r,l) = π*r^2 + 2*r*l
 """
 cₗ(r,l)  = 2*r + l
 
-
-"""
-    Using Dates package, get today's date and convert to YYYMMDD format
-"""

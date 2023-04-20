@@ -40,6 +40,7 @@ export
     Global,
     DeathRateMichaelisMentenForm,
     CellBoundaryNormal,
+    DataAllCellLabels,
     get_cell_data,
     get_cell_dataframe,
     get_cell_dataframe_TS,
