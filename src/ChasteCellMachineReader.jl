@@ -104,7 +104,8 @@ export
     get_Nₐ,
     compute_pop_ode_sol,
     get_mean_pop_with_std_errors,
-    get_opt_param_sol
+    get_opt_param_sol,
+    extract_dataframe_names
 
 
 include("StructsAndTypes.jl")
