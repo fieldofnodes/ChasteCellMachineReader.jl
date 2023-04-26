@@ -227,11 +227,11 @@ end
     Output dataframe will have the time series
     time, target, attacker, m₁, m₂, m₃, m, neigh_diff_to_attacker, neigh_diff_to_target
 """
-function get_cell_dataframe_TS(chaste_path_dat_file)
+function get_cell_dataframe_TS(T,chaste_path_dat_file)
     
     # Get cell dataframe and add attacker and target column
     cell_df = @chain chaste_path_dat_file begin
-        get_cell_dataframe(_)
+        get_cell_dataframe(T,_)
         @rtransform :cell_type = :cell_type_label == 1 ? "attacker" : "target"
     end
 
