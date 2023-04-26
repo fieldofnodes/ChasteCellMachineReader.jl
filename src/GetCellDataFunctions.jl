@@ -293,7 +293,7 @@ function get_cell_dataframe_TS(::DataAllCellLabels,chaste_path_dat_file)
     map_label(x) = label_dict[x]
     # Get cell dataframe and add attacker and target column
     cell_df = @chain chaste_path_dat_file begin
-        get_cell_dataframe(_)
+        get_cell_dataframe(MachineState(),_)
         @rtransform :cell_type = map_label(:cell_type_label)
     end
     
