@@ -17,7 +17,7 @@
     This function returns a vector, each row is a unique time step and cell to encapsulate the time series of the population.
 """
 function get_cell_data(::MachineState,
-    cell_population_data::Matrix{Any})
+    cell_population_data::Matrix)
     
     # Gather properties of cells 
     number_cell_properties = 7
@@ -97,74 +97,80 @@ end
     This function returns a vector, each row is a unique time step, machine id and cell to encapsulate the time series of the population.
 """
 function get_cell_data(::MachineData,
-    machine_population_data::Matrix{Any})
-    
-    # Gather properties of cells 
-    number_machine_properties = 7
-    total_number_machines = Int((size(machine_population_data,2)-1)/number_machine_properties)
-    total_number_time_steps = size(machine_population_data,1)
-    
-    # Separate time vector and state properties
-    simulation_time_only = machine_population_data[:,1]
-    simulation_no_time = machine_population_data[:,2:end]
+    machine_population_data::Matrix)
+     # Gather properties of cells 
+     number_machine_properties = 7
+     total_number_machines = Int((size(machine_population_data,2)-1)/number_machine_properties)
+     total_number_time_steps = size(machine_population_data,1)
+     
+     # Separate time vector and state properties
+     simulation_time_only = machine_population_data[:,1]
+     simulation_no_time = machine_population_data[:,2:end]
+ 
+ 
+     # Separate each cells across each rows
+     # Get index of first and last cell properties
+     machine_block_per_row = []
+     for i in 1:total_number_machines
+         first = number_machine_properties*i - 6
+         push!(machine_block_per_row,first)
+         second = number_machine_properties*i
+         push!(machine_block_per_row,second)
+     end
+ 
+ 
+     
+     # Separate each cell at each time step into a vector
+     machines_data = []
+     for j = 1:total_number_time_steps, i = 1:total_number_machines
+         first = 2*i - 1
+         second = 2*i
+         machine_data = simulation_no_time[j,machine_block_per_row[first]:machine_block_per_row[second]]
+         machine_time_data = vcat(simulation_time_only[j],machine_data)
+         push!(machines_data,machine_time_data)
+     end
+ 
+ 
+     
+ 
+     # Get cell data size counting at each time step
+     size_machine_data = size(machines_data,1)
+ 
+     # Get cell properties without time present
+     non_time_machines = [i[2:end] for i in machines_data]
+     
+     # Assert that the intersection of checking empty rows is not empty
+     # Essentially testing the data read is not empty as a whole
+     empty_machine_vec = map(x->!all(isempty.(x)),non_time_machines)
+     
+     @assert any(empty_machine_vec) "Population starts smaller than it finishes, there should be empty cells"
+ 
+     # Find the indices where without time we find empty vectors
+     # Remove empty vectors
+     # Assert no empty cell remain
+     empty_indx = findall(map(x->all(isempty.(x)),non_time_machines))
+     non_zero_elements = [machines_data[i] for i = 1:size_machine_data if i ∉ empty_indx]
+     #@assert all([i[2] == i[3] for i in non_zero_elements]) "The second and third data point of the cell is the location index and cell id, these should ne identical"
+     @assert all([all([!isempty(j) for j in i]) for i in non_zero_elements]) "No one of the elements per time should be empty"
+ 
+     # Map each vectory to the MachineStateCellProperties struct
+     machine_properties = map(x -> MachineDataProperties(x...),non_zero_elements)
+     return machine_properties
+ end
 
 
-    # Separate each cells across each rows
-    # Get index of first and last cell properties
-    machine_block_per_row = []
-    for i in 1:total_number_machines
-        first = number_machine_properties*i - 6
-        push!(machine_block_per_row,first)
-        second = number_machine_properties*i
-        push!(machine_block_per_row,second)
-    end
-
-
-    
-    # Separate each cell at each time step into a vector
-    machines_data = []
-    for j = 1:total_number_time_steps, i = 1:total_number_machines
-        first = 2*i - 1
-        second = 2*i
-        machine_data = simulation_no_time[j,machine_block_per_row[first]:machine_block_per_row[second]]
-        machine_time_data = vcat(simulation_time_only[j],machine_data)
-        push!(machines_data,machine_time_data)
-    end
-
-    # Get cell data size counting at each time step
-    size_machine_data = size(machines_data,1)
-
-    # Get cell properties without time present
-    non_time_machines = [i[2:end] for i in machines_data]
-    
-    # Assert that the intersection of checking empty rows is not empty
-    # Essentially testing the data read is not empty as a whole
-    @assert any(map(x->all(isempty.(x)),non_time_machines)) "Population starts smaller than it finishes, there should be empty cells"
-
-    # Find the indices where without time we find empty vectors
-    # Remove empty vectors
-    # Assert no empty cell remain
-    empty_indx = findall(map(x->all(isempty.(x)),non_time_machines))
-    non_zero_elements = [machines_data[i] for i = 1:size_machine_data if i ∉ empty_indx]
-    #@assert all([i[2] == i[3] for i in non_zero_elements]) "The second and third data point of the cell is the location index and cell id, these should ne identical"
-    @assert all([all([!isempty(j) for j in i]) for i in non_zero_elements]) "No one of the elements per time should be empty"
-
-    # Map each vectory to the MachineStateCellProperties struct
-    machine_properties = map(x -> MachineDataProperties(x...),non_zero_elements)
-    return machine_properties
-end
 
 
 
 
+ """
+    Extract the data frame from the cell state data
 """
-    From cell path to data frame and use the fields of MachineState
-    for each column
-"""
-function get_cell_dataframe(path)
-    cdf = @chain path begin
-        readdlm(_)
-        get_cell_data(MachineState(),_) 
+ 
+
+
+function extract_dataframe_names(::MachineState, data)
+    @chain data begin
         DataFrame(CellData = _) 
         @rtransform :time = :CellData.time 
         @rtransform :location_index = :CellData.location_index 
@@ -177,7 +183,40 @@ function get_cell_dataframe(path)
         select(_,Not(:CellData))
         @transform :time = :time .- :time[1]
     end
-    return cdf
+end
+
+"""
+    Extract the data frame from the machine data
+"""
+ function extract_dataframe_names(::MachineData, data)
+    @chain data begin
+        DataFrame(CellData = _) 
+        @rtransform :time = :CellData.time
+        @rtransform :cell_id = :CellData.cell_id
+        @rtransform :cell_type_label = :CellData.cell_label
+        @rtransform :machine_id = :CellData.machine_id
+        @rtransform :machine_state = :CellData.machine_state
+        @rtransform :machine_coord_x = :CellData.machine_coord_x
+        @rtransform :machine_coord_y = :CellData.machine_coord_y
+        @rtransform :machine_coord_z = :CellData.machine_coord_z
+        select(_,Not(:CellData))
+        @transform :time = :time .- :time[1]
+    end
+end
+
+
+
+"""
+    From machine path to data frame and use the fields of MachineData
+    for each column
+"""
+function get_cell_dataframe(T,path)
+    df = @chain path begin
+        readdlm(_) 
+        get_cell_data(T,_) 
+        extract_dataframe_names(T,_)
+    end
+    return df
 end
 
 
