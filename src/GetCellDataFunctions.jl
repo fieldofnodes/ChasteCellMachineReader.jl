@@ -59,7 +59,9 @@ function get_cell_data(::MachineState,
     
     # Assert that the intersection of checking empty rows is not empty
     # Essentially testing the data read is not empty as a whole
-    @assert any(map(x->all(isempty.(x)),non_time_cells)) "Population starts smaller than it finishes, there should be empty cells"
+    empty_machine_vec = map(x->!all(isempty.(x)),non_time_machines)
+     
+     @assert any(empty_machine_vec) "Population starts smaller than it finishes, there should be empty cells"
 
     # Find the indices where without time we find empty vectors
     # Remove empty vectors
