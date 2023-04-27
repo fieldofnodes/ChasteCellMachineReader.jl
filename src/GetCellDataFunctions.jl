@@ -336,7 +336,7 @@ function get_cell_dataframe_TS(::DataAllCellLabels,chaste_path_dat_file)
     all_TS = @chain attacker_target_TS begin
         innerjoin(_,neighbours_TS,on=:time)
         innerjoin(_,machines_TS,on=:time)
-        @select :time :target :attacker :m₁ :m₂ :m₃ :mₜ :neigh_diff_to_attacker :neigh_diff_to_target
+        @select :time :target :attacker :infected :m₁ :m₂ :m₃ :mₜ :neigh_diff_to_attacker :neigh_diff_to_target
     end
 
     return all_TS
