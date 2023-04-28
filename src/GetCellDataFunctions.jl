@@ -292,7 +292,7 @@ end
     Output dataframe will have the time series
     time, target, attacker, m₁, m₂, m₃, m, neigh_diff_to_attacker, neigh_diff_to_target
 """
-function get_cell_dataframe_TS1(::DataAllCellLabels,chaste_path_dat_file)
+function get_cell_dataframe_TS(::DataAllCellLabels,chaste_path_dat_file)
     label_dict = Dict(0 => "target", 1 => "attacker", 3 => "infected")
     map_label(x) = label_dict[x]
     # Get cell dataframe and add attacker and target column
