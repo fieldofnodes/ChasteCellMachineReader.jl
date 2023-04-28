@@ -283,6 +283,8 @@ end
 
 
 
+
+
 """ 
     From String -> DataFrame    
     String: path to the chaste .dat file from 
@@ -290,7 +292,7 @@ end
     Output dataframe will have the time series
     time, target, attacker, m₁, m₂, m₃, m, neigh_diff_to_attacker, neigh_diff_to_target
 """
-function get_cell_dataframe_TS(::DataAllCellLabels,chaste_path_dat_file)
+function get_cell_dataframe_TS1(::DataAllCellLabels,chaste_path_dat_file)
     label_dict = Dict(0 => "target", 1 => "attacker", 3 => "infected")
     map_label(x) = label_dict[x]
     # Get cell dataframe and add attacker and target column
@@ -338,11 +340,28 @@ function get_cell_dataframe_TS(::DataAllCellLabels,chaste_path_dat_file)
     all_TS = @chain attacker_target_TS begin
         innerjoin(_,neighbours_TS,on=:time)
         innerjoin(_,machines_TS,on=:time)
+        #@select :time :target :attacker :infected :m₁ :m₂ :m₃ :mₜ :neigh_diff_to_attacker :neigh_diff_to_target
+    end
+#=
+
+    try
+        @chain all_TS begin
+            name(_)
+            filter(x -> occursin("infected",x),_)
+        end
+    catch
+        all_TS.infected .= 0
+    end
+    
+    all_TS = @chain all_TS begin
         @select :time :target :attacker :infected :m₁ :m₂ :m₃ :mₜ :neigh_diff_to_attacker :neigh_diff_to_target
     end
-
+=#
     return all_TS
 end
+
+
+
 
 
 
