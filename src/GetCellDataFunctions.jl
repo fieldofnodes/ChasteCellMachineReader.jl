@@ -160,6 +160,72 @@ function get_cell_data(::MachineData,
      return machine_properties
  end
 
+"""
+    Get cell deata from the CellAgeData struct data - 
+"""
+ function get_cell_data(::CellAgeData,
+    cell_population_data::Matrix)
+    
+    # Gather properties of cells 
+    number_cell_properties = 5
+    cell_property_index_space = number_cell_properties - 1
+    total_number_cells = Int((size(cell_population_data,2)-1)/number_cell_properties)
+    total_number_time_steps = size(cell_population_data,1)
+    
+    # Separate time vector and state properties
+    simulation_time_only = cell_population_data[:,1]
+    simulation_no_time = cell_population_data[:,2:end]
+
+
+    # Separate each cells across each rows
+    # Get index of first and last cell properties
+    cell_block_per_row = []
+    for i in 1:total_number_cells
+        first = number_cell_properties*i - cell_property_index_space
+        push!(cell_block_per_row,first)
+        second = number_cell_properties*i
+        push!(cell_block_per_row,second)
+    end
+
+
+    
+    # Separate each cell at each time step into a vector
+    cells_data = []
+    for j = 1:total_number_time_steps, i = 1:total_number_cells
+        first = 2*i - 1
+        second = 2*i
+        cell_data = simulation_no_time[j,cell_block_per_row[first]:cell_block_per_row[second]]
+        cell_time_data = vcat(simulation_time_only[j],cell_data)
+        push!(cells_data,cell_time_data)
+    end
+
+    # Get cell data size counting at each time step
+    size_cell_data = size(cells_data,1)
+
+    # Get cell properties without time present
+    non_time_cells = [i[2:end] for i in cells_data]
+    
+    # Assert that the intersection of checking empty rows is not empty
+    # Essentially testing the data read is not empty as a whole
+    empty_machine_vec = map(x->!all(isempty.(x)),non_time_cells)
+     
+     @assert any(empty_machine_vec) "Population starts smaller than it finishes, there should be empty cells"
+
+    # Find the indices where without time we find empty vectors
+    # Remove empty vectors
+    # Assert no empty cell remain
+    empty_indx = findall(map(x->all(isempty.(x)),non_time_cells))
+    non_zero_elements = [cells_data[i] for i = 1:size_cell_data if i ∉ empty_indx]
+    @assert all([all([!isempty(j) for j in i]) for i in non_zero_elements]) "No one of the elements per time should be empty"
+
+    # Map each vectory to the MachineStateCellProperties struct
+    cell_properties = map(x -> CellAgeProperties(x...),non_zero_elements)
+    return cell_properties
+end
+
+
+
+
 
 
 
@@ -203,6 +269,26 @@ end
         @rtransform :machine_coord_z = :CellData.machine_coord_z
         select(_,Not(:CellData))
         @transform :time = :time .- :time[1]
+    end
+end
+
+
+
+"""
+    Extract data from the cell age data into the corresponding data frame
+"""
+function extract_dataframe_names(::CellAgeData, data)
+    @chain data begin
+        DataFrame(CellData = _) 
+        @rtransform :time = :CellData.time 
+        @rtransform :location_index = :CellData.location_index 
+        @rtransform :cell_centre_coord_x = :CellData.cell_centre_coord_x
+        @rtransform :cell_centre_coord_y = :CellData.cell_centre_coord_y
+        @rtransform :cell_centre_coord_z = :CellData.cell_centre_coord_z
+        @rtransform :cell_age = :CellData.cell_age        
+        select(_,Not(:CellData))
+        @transform :time = :time .- :time[1]
+        @transform :cell_age = :cell_age .- :cell_age[1]
     end
 end
 

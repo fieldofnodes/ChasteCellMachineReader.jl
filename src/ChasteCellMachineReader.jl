@@ -18,6 +18,8 @@ using Reexport
 export
     MachineState,
     MachineData,
+    CellAgeProperties,  
+    CellAgeData,
     MachineStateCellProperties,
     MachineDataProperties,
     MachineStateTimeSeries,

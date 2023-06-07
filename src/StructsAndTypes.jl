@@ -32,6 +32,26 @@ end
 
 
 """
+    Cell age data writer
+    Params:
+
+    time
+    location_index
+    cell_centre_coord_x  
+    cell_centre_coord_y  
+    cell_centre_coord_z  
+    cell_age
+"""
+struct CellAgeProperties 
+    time
+    location_index
+    cell_centre_coord_x  
+    cell_centre_coord_y  
+    cell_centre_coord_z  
+    cell_age
+end
+struct CellAgeData end  
+"""
     Struct for the so-called machinedata
         time             
         cell_id           
