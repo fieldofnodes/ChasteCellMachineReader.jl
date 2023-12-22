@@ -1,0 +1,63 @@
+<Chaste>
+
+	<OffLatticeSimulation-3-3>
+		<Dt>0.000833333</Dt>
+		<EndTime>5</EndTime>
+		<SamplingTimestepMultiple>40</SamplingTimestepMultiple>
+		<OutputDivisionLocations>0</OutputDivisionLocations>
+		<OutputCellVelocities>0</OutputCellVelocities>
+	</OffLatticeSimulation-3-3>
+
+	<NodeBasedCellPopulationWithCapsules-3>
+		<RandomAnglePerturbationAtCellDivision>0.001<RandomAnglePerturbationAtCellDivision>
+		<MechanicsCutOffLength>150</MechanicsCutOffLength>
+		<UseVariableRadii>0</UseVariableRadii>
+		<MeinekeDivisionSeparation>0.3</MeinekeDivisionSeparation>
+		<CentreBasedDivisionRule>
+			<CapsuleBasedDivisionRule-3-3>
+			</CapsuleBasedDivisionRule-3-3>
+		</CentreBasedDivisionRule>
+		<DampingConstantNormal>1</DampingConstantNormal>
+		<DampingConstantMutant>1</DampingConstantMutant>
+		<OutputResultsForChasteVisualizer>1</OutputResultsForChasteVisualizer>
+	</NodeBasedCellPopulationWithCapsules-3>
+
+	<CellCycleModels>
+		<UniformCellCycleModel>
+			<MinCellCycleDuration>0.5</MinCellCycleDuration>
+			<MaxCellCycleDuration>1.5</MaxCellCycleDuration>
+		</UniformCellCycleModel>
+	</CellCycleModels>
+
+	<SrnModels>
+		<NullSrnModel>
+		</NullSrnModel>
+	</SrnModels>
+
+	<CellKillers>
+		<TypeSixMachineCellKiller-3>
+		</TypeSixMachineCellKiller-3>
+	</CellKillers>
+
+	<SimulationModifiers>
+		<TypeSixMachineStateAndPositionModifier-3>
+		</TypeSixMachineStateAndPositionModifier-3>
+	</SimulationModifiers>
+
+	<Forces>
+		<GeneralisedCapsuleForce-3-3>
+		</GeneralisedCapsuleForce-3-3>
+	</Forces>
+
+	<CellPopulationBoundaryConditions>
+	</CellPopulationBoundaryConditions>
+
+	<NumericalMethod>
+		<ForwardEulerNumericalMethodForCapsules-3-3>
+			<UseAdaptiveTimestep>0</UseAdaptiveTimestep> 
+			<UseUpdateNodeLocation>0</UseUpdateNodeLocation> 
+			<GhostNodeForcesEnabled>0</GhostNodeForcesEnabled> 
+		</ForwardEulerNumericalMethodForCapsules-3-3>
+	</NumericalMethod>
+
+</Chaste>
