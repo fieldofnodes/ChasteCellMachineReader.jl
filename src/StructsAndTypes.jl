@@ -49,7 +49,8 @@ struct CellAgeProperties
     cell_centre_coord_y  
     cell_centre_coord_z  
     cell_age
-end
+end 
+
 struct CellAgeData end  
 """
     Struct for the so-called machinedata
@@ -216,3 +217,30 @@ struct CellBoundaryNormal end
 struct DataAllCellLabels end
 
 
+
+# cell scaling
+# time, location_index, cell_id, 
+struct GenericDatToMat end
+struct CellScalingProperties
+    time
+    location_index             
+    cell_id               
+    cell_centre_coord_x  
+    cell_centre_coord_y  
+    cell_centre_coord_z 
+    cell_radius
+    cell_length 
+    unknown_value
+end
+
+struct CellOrientationProperties
+    time
+    location_index             
+    cell_id               
+    cell_centre_coord_x  
+    cell_centre_coord_y  
+    cell_centre_coord_z 
+    cell_orient_direction_x  
+    cell_orient_direction_y  
+    cell_orient_direction_z 
+end
