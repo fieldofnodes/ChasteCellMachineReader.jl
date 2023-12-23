@@ -1,0 +1,45 @@
+Process 0 of 1.
+uname sysname  = Linux
+uname nodename = 032af70a06c0
+uname release  = 6.2.0-26-generic
+uname version  = #26~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Jul 13 16:27:29 UTC 2
+uname machine  = x86_64
+
+Information on number and type of processors:
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+model name	: AMD Ryzen 7 4800H with Radeon Graphics
+
+Information on processor caches, in the same order as above:
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+cache size	: 512 KB
+
+Information on system memory:
+MemTotal:       32258432 kB
